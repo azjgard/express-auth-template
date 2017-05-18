@@ -1,9 +1,20 @@
-var express = require('express');
-var router = express.Router();
+var userController = require('../controllers/userController.js');
 
-/* GET home page. */
-router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
-});
+function setRoutes(router) {
+  router.get('/', function(req, res){
+    // if the user is legitimate, render the index
+    if (req.session.user) {
+      res.render('index', {
+        username       : req.session.username,
+        sessionMessage : req.session.msg,
+      });
+    } 
+    // Otherwise, redirect them to the login screen
+    else {
+      req.session.msg = 'Access denied!';
+      res.redirect('/login');
+    }
+  });
+}
 
-module.exports = router;
+module.exports = setRoutes;
